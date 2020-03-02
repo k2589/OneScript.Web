@@ -3,7 +3,7 @@ WORKDIR /app
 
 # Copy everything else and build
 
-COPY . ./
+COPY src/ ./
 RUN dotnet restore OneScript/OneScriptWeb.csproj
 RUN dotnet publish OneScript/OneScriptWeb.csproj -c Release -o /app/out -f netcoreapp2.2 -r debian-x64
 
