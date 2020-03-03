@@ -7,11 +7,16 @@ COPY src/ ./
 RUN dotnet restore OneScript/OneScriptWeb.csproj
 RUN dotnet publish OneScript/OneScriptWeb.csproj -c Release -o /app/out -f netcoreapp2.2  -r linux-arm
 
+WORKDIR /builder/working/directory
+RUN curl -L https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz | tar zxvf - -C . && mv qemu-3.0.0+resin-arm/qemu-arm-static .
+
 # RUNTIME
 #FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
 FROM arm32v7/ubuntu:latest
 
-# RUN apt update
+COPY --from=build-env /builder/working/directory/qemu-arm-static /usr/bin
+
+RUN apt update
 RUN apt install -y --no-install-recommends liblttng-ust0 libcurl4 libssl1.0.0 libkrb5-3 zlib1g libicu60 && \
     rm -rf /var/lib/apt/lists/*
 
